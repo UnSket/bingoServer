@@ -13,7 +13,7 @@ public class BingoApplication {
 
     public static void main(String[] args) {
         Flyway flyway = new Flyway();
-        flyway.setDataSource("jdbc:h2:~/bingo", "postgres", null);
+        flyway.setDataSource("jdbc:h2:~/bingo1", "postgres", null);
 
         flyway.migrate();
         SpringApplication.run(BingoApplication.class, args);

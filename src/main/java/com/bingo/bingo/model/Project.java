@@ -1,5 +1,8 @@
 package com.bingo.bingo.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -15,6 +18,14 @@ public class Project {
 
     public Project(String name) {
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Project(){}
