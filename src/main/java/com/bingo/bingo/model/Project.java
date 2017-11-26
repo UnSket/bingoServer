@@ -2,6 +2,7 @@ package com.bingo.bingo.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +14,7 @@ public class Project {
 
     private String name;
 
-    @OneToMany
+    @OneToMany(mappedBy = "project", orphanRemoval = true)
     private List<SynonymsGroup> synonymsGroups;
 
     public Project(String name) {
