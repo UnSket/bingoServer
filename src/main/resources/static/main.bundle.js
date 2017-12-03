@@ -230,8 +230,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 var routes = [
-    { path: '', component: __WEBPACK_IMPORTED_MODULE_2__welcome_screen_welcome_screen_component__["a" /* WelcomeScreenComponent */] },
-    { path: "project/:id", component: __WEBPACK_IMPORTED_MODULE_3__main_menu_main_menu_component__["a" /* MainMenuComponent */] }
+    { path: "project/:id", component: __WEBPACK_IMPORTED_MODULE_3__main_menu_main_menu_component__["a" /* MainMenuComponent */] },
+    { path: '**', component: __WEBPACK_IMPORTED_MODULE_2__welcome_screen_welcome_screen_component__["a" /* WelcomeScreenComponent */] },
 ];
 var AppRoutingModule = (function () {
     function AppRoutingModule() {
@@ -551,7 +551,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, ":host{\r\n  display: block;\r\n}\r\n", ""]);
+exports.push([module.i, ":host{\r\n  display: block;\r\n}\r\napp-projects >>> .block {\r\n  background-color: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -564,7 +564,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/main-menu/main-menu.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "\r\n    <header>\r\n      <app-header [title]=\"project.name\"></app-header>\r\n    </header>\r\n    <div class=\"container\">\r\n      <ngb-tabset #t = \"ngbTabset\" type=\"pills\">\r\n        <div class=\"row\">\r\n          <div class=\"col-12 col-lg\">\r\n            <ngb-tab id=\"edit\">\r\n                <ng-template ngbTabTitle><b>Add</b></ng-template>\r\n                <ng-template ngbTabContent>\r\n                <app-add-group [title]=\"'Add new group'\" [project]=\"project\"></app-add-group>\r\n              </ng-template>\r\n            </ngb-tab>\r\n          </div>\r\n          <div class=\"col-12 col-lg\">\r\n            <ngb-tab>\r\n              <ng-template ngbTabTitle><b>Edit</b></ng-template>\r\n              <ng-template ngbTabContent>\r\n                <app-edit [project]=\"project\"></app-edit>\r\n              </ng-template>\r\n            </ngb-tab>\r\n          </div>\r\n          <div class=\"col-12 col-lg\">\r\n            <ngb-tab>\r\n              <ng-template ngbTabTitle><b>Print</b></ng-template>\r\n              <ng-template ngbTabContent>\r\n                <p>There is nothing yet!</p>\r\n              </ng-template>\r\n            </ngb-tab>\r\n          </div>\r\n        </div>\r\n      </ngb-tabset>\r\n    </div>\r\n\r\n"
+module.exports = "\r\n    <header>\r\n      <app-header [title]=\"project.name\"></app-header>\r\n    </header>\r\n    <div class=\"container\">\r\n      <ngb-tabset #t = \"ngbTabset\" type=\"pills\">\r\n        <div class=\"row\">\r\n          <div class=\"col-12 col-lg\">\r\n            <ngb-tab id=\"edit\">\r\n                <ng-template ngbTabTitle><b>Add</b></ng-template>\r\n                <ng-template ngbTabContent>\r\n                <app-add-group [title]=\"'Add new group'\" [project]=\"project\"></app-add-group>\r\n              </ng-template>\r\n            </ngb-tab>\r\n          </div>\r\n          <div class=\"col-12 col-lg\">\r\n            <ngb-tab>\r\n              <ng-template ngbTabTitle><b>Edit</b></ng-template>\r\n              <ng-template ngbTabContent>\r\n                <app-edit [project]=\"project\"></app-edit>\r\n              </ng-template>\r\n            </ngb-tab>\r\n          </div>\r\n          <div class=\"col-12 col-lg\">\r\n            <ngb-tab>\r\n              <ng-template ngbTabTitle><b>Print</b></ng-template>\r\n              <ng-template ngbTabContent>\r\n                <p>There is nothing yet!</p>\r\n              </ng-template>\r\n            </ngb-tab>\r\n          </div>\r\n          <div class=\"col-12 col-lg\">\r\n            <ngb-tab>\r\n              <ng-template ngbTabTitle><b>Change project</b></ng-template>\r\n              <ng-template ngbTabContent>\r\n                <app-projects></app-projects>\r\n              </ng-template>\r\n            </ngb-tab>\r\n          </div>\r\n        </div>\r\n      </ngb-tabset>\r\n    </div>\r\n\r\n"
 
 /***/ }),
 
@@ -861,7 +861,7 @@ var ProjectsComponent = (function () {
         if (this.choosedProject.id === 0) {
             this.projectService.addProject(this.newProject).subscribe(function (data) {
                 localStorage.setItem('currentProject', data);
-                _this.router.navigate(["/project/", data]);
+                _this.router.navigate(["/", data]);
             });
         }
         else {
