@@ -28,6 +28,7 @@ public class ProjectController {
         this.projectData = projectData;
         this.synonymsGroupData = synonymsGroupData;
         this.objectMapper = new ObjectMapper();
+
     }
 
     @PostMapping(value = "")
