@@ -240,7 +240,7 @@ var AppRoutingModule = (function () {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["J" /* NgModule */])({
             exports: [__WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* RouterModule */]],
             imports: [
-                __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* RouterModule */].forRoot(routes)
+                __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* RouterModule */].forRoot(routes, { useHash: true })
             ],
             declarations: []
         })
@@ -773,7 +773,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, ".block{\r\n  padding: 40px 20px;\r\n  background-color: rgba(0,0,0,.6);\r\n  border-radius: 15px;\r\n  box-shadow: 0 0 5px 2px black;\r\n}\r\n.dropdown{\r\n  width: 500px;\r\n  max-width: 100%;\r\n}\r\n.dropdown-menu{\r\n  width: 500px;\r\n  max-width: 100%;\r\n}\r\n.dropdown-item:hover{\r\n  background-color: #F2F2F2;\r\n}\r\nh3{\r\n  color: white;\r\n}\r\ninput.newProject{\r\n  width: 205px;\r\n  padding: 5px 15px;\r\n  border-radius: 20px;\r\n  background-color: transparent;\r\n  border: 1px solid white;\r\n  outline: none;\r\n  color: white;\r\n}\r\ninput.newProject:focus{\r\n  box-shadow: 0 0 15px 5px white;\r\n}\r\n::-webkit-input-placeholder {color:white;}\r\n::-moz-placeholder          {color:white;}/* Firefox 19+ */\r\n:-moz-placeholder           {color:white;}/* Firefox 18- */\r\n:-ms-input-placeholder      {color:white;}\r\n", ""]);
+exports.push([module.i, ":host{\r\n  max-width: 90%;\r\n}\r\n.block{\r\n  padding: 40px 20px;\r\n  background-color: rgba(0,0,0,.6);\r\n  border-radius: 15px;\r\n  box-shadow: 0 0 5px 2px black;\r\n}\r\n.dropdown{\r\n  width: 500px;\r\n  max-width: 100%;\r\n}\r\n.dropdown-menu{\r\n  width: 500px;\r\n  max-width: 100%;\r\n}\r\n.dropdown-item:hover{\r\n  background-color: #F2F2F2;\r\n}\r\nh3{\r\n  color: white;\r\n}\r\ninput.newProject{\r\n  width: 205px;\r\n  padding: 5px 15px;\r\n  border-radius: 20px;\r\n  background-color: transparent;\r\n  border: 1px solid white;\r\n  outline: none;\r\n  color: white;\r\n}\r\ninput.newProject:focus{\r\n  box-shadow: 0 0 15px 5px white;\r\n}\r\n::-webkit-input-placeholder {color:white;}\r\n::-moz-placeholder          {color:white;}/* Firefox 19+ */\r\n:-moz-placeholder           {color:white;}/* Firefox 18- */\r\n:-ms-input-placeholder      {color:white;}\r\n", ""]);
 
 // exports
 
@@ -786,7 +786,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/projects/projects.component.html":
 /***/ (function(module, exports) {
 
-module.exports = " <div class=\"block\">\r\n  <div class=\"col-12 text-center\">\r\n    <h3>Choose or create project</h3>\r\n  </div>\r\n  <div class=\"col-12 text-center mt-3\">\r\n    <div ngbDropdown class=\"d-inline-block\">\r\n      <button class=\"btn btn-primary dropdown\" id=\"dropdownBasic2\" ngbDropdownToggle>{{choosedProject.name}}</button>\r\n      <div ngbDropdownMenu aria-labelledby=\"dropdownBasic1\">\r\n        <button (click)=\"choose(project)\" *ngFor=\"let project of projects\" class=\"dropdown-item\">{{project.id}} - {{project.name}}</button>\r\n        <button (click)=\"choose({ name: 'New project', id: 0})\" class=\"dropdown-item\">New project</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div *ngIf=\"choosedProject.id === 0\" class=\"col-12 text-center mt-3\">\r\n    <input class=\"md-3 newProject\" [(ngModel)]=\"newProject\" placeholder=\"Input new project name\" (keyup)=\"validate()\"/>\r\n    <ngb-alert *ngFor=\"let alert of alerts\" [dismissible]=\"false\" type=\"danger\">{{ alert }}</ngb-alert>\r\n  </div>\r\n  <div class=\"col-12 text-center mt-3\">\r\n    <input class=\"btn btn-success\" type=\"button\" (click)=\"save()\" value=\"Commit\" [disabled]=\"isDisabled\">\r\n  </div>\r\n</div>\r\n"
+module.exports = " <div class=\"block\">\r\n  <div class=\"col-12 text-center\">\r\n    <h3>Choose or create project</h3>\r\n  </div>\r\n  <div class=\"col-12 text-center mt-3\">\r\n    <div ngbDropdown>\r\n      <button class=\"btn btn-primary dropdown\" id=\"dropdownBasic2\" ngbDropdownToggle>{{choosedProject.name}}</button>\r\n      <div ngbDropdownMenu aria-labelledby=\"dropdownBasic1\">\r\n        <button (click)=\"choose(project)\" *ngFor=\"let project of projects\" class=\"dropdown-item\">{{project.id}} - {{project.name}}</button>\r\n        <button (click)=\"choose({ name: 'New project', id: 0})\" class=\"dropdown-item\">New project</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div *ngIf=\"choosedProject.id === 0\" class=\"col-12 text-center mt-3\">\r\n    <input class=\"md-3 newProject\" [(ngModel)]=\"newProject\" placeholder=\"Input new project name\" (keyup)=\"validate()\"/>\r\n    <ngb-alert *ngFor=\"let alert of alerts\" [dismissible]=\"false\" type=\"danger\">{{ alert }}</ngb-alert>\r\n  </div>\r\n  <div class=\"col-12 text-center mt-3\">\r\n    <input class=\"btn btn-success\" type=\"button\" (click)=\"save()\" value=\"Commit\" [disabled]=\"isDisabled\">\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -861,13 +861,17 @@ var ProjectsComponent = (function () {
         if (this.choosedProject.id === 0) {
             this.projectService.addProject(this.newProject).subscribe(function (data) {
                 localStorage.setItem('currentProject', data);
-                _this.router.navigate(["/", data]);
+                _this.router.navigate(["/project/", data]).then(function () {
+                    _this.router.navigate(["/"]);
+                });
             });
         }
         else {
             console.log('choosed - ' + this.choosedProject.name);
             localStorage.setItem('currentProject', this.choosedProject.id.toString());
-            this.router.navigate(["/project/", this.choosedProject.id.toString()]);
+            this.router.navigate(["/project/", this.choosedProject.id.toString()]).then(function () {
+                _this.router.navigate(["/"]);
+            });
             // this.redirect.emit([`/project/`, this.choosedProject.id.toString()]);
         }
     };
