@@ -1,7 +1,9 @@
 package com.bingo.bingo.controllers;
 
+import com.bingo.bingo.data.ApprenticeSheetRepository;
 import com.bingo.bingo.data.ProjectRepository;
 import com.bingo.bingo.data.SynonymsGroupRepository;
+import com.bingo.bingo.model.ApprenticeSheet;
 import com.bingo.bingo.model.Project;
 import com.bingo.bingo.model.SynonymsGroup;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,7 +16,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.event.ListDataEvent;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -22,13 +27,16 @@ import java.util.Map;
 public class ProjectController {
     private ProjectRepository projectData;
     private SynonymsGroupRepository synonymsGroupData;
+    private ApprenticeSheetRepository apprenticeSheetData;
+
     private ObjectMapper objectMapper;
     @Autowired
-    public ProjectController(ProjectRepository projectData, SynonymsGroupRepository synonymsGroupData) {
+    public ProjectController(ProjectRepository projectData, SynonymsGroupRepository synonymsGroupData, ApprenticeSheetRepository apprenticeSheetRepository) {
         this.projectData = projectData;
         this.synonymsGroupData = synonymsGroupData;
-        this.objectMapper = new ObjectMapper();
+        this.apprenticeSheetData = apprenticeSheetRepository;
 
+        this.objectMapper = new ObjectMapper();
     }
 
     @PostMapping(value = "")
@@ -102,5 +110,32 @@ public class ProjectController {
             e.printStackTrace();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping(value = "/addApprenticeSheet")
+    ResponseEntity addApprenticeSheet(@RequestParam long projectId){
+        List<Integer> groupKeys = new ArrayList<>();
+        for(SynonymsGroup group : projectData.getOne(projectId).getSynonymsGroups()){
+            groupKeys.add((int)Math.round(Math.random()*(group.getOthers().size() - 1)));
+        }
+        apprenticeSheetData.saveAndFlush(new ApprenticeSheet(projectData.getOne(projectId), groupKeys));
+        return ResponseEntity.ok("[\"vse ok\"]");
+    }
+
+    @GetMapping(value = "/getApprenticeSheet")
+    ResponseEntity getApprenticeSheet(@RequestParam Long projectId, Long sheetId){
+        List<String> words = new ArrayList<>();
+        List<SynonymsGroup> groups = projectData.getOne(projectId).getSynonymsGroups();
+        List<Integer> keys = apprenticeSheetData.getOne(sheetId).getGroupKeys();
+        for (int i = 0; i < keys.size(); i++) {
+            //проходимся по списку групп и ключей. Соотвественно берем побочное слово с индексом из ключа
+            words.add(groups.get(i).getOthers().get(keys.get(i)));
+        }
+        try {
+            return ResponseEntity.ok(objectMapper.writeValueAsString(words));
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 }

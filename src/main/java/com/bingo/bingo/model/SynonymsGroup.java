@@ -28,8 +28,6 @@ public class SynonymsGroup {
     @ElementCollection()
     @CollectionTable(name = "synonyms")
     @Column(name = "name")
-    //@GenericGenerator(name="myGenerator",strategy="sequence")
-    //@CollectionId(columns = @Column(name = "SYNONYMS_GROUP_ID"), type = @Type(type = "long"), generator = "myGenerator")
     private List<String> others = new ArrayList<String>();
 
     public List<String> getOthers() {
