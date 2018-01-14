@@ -1,8 +1,12 @@
 package com.bingo.bingo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import javafx.util.Pair;
+
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.*;
 
 @Entity
 public class ApprenticeSheet {
@@ -14,20 +18,28 @@ public class ApprenticeSheet {
 
     @ElementCollection()
     @CollectionTable(name = "keys")
-    private List<Integer>  groupKeys;
+    private List<Pair<Integer, Integer>> groupKeys;
 
     public ApprenticeSheet(){}
 
     public ApprenticeSheet(Project project, List<Integer> groupKeys) {
         this.project = project;
-        this.groupKeys = groupKeys;
+        this.groupKeys = new ArrayList<>();
+        for (int i = 0; i < groupKeys.size(); i++) {
+            this.groupKeys.add(new Pair<>(i, groupKeys.get(i)));
+        }
+        Collections.shuffle(this.groupKeys);
     }
 
-    public List<Integer> getGroupKeys() {
+    public List<Pair<Integer, Integer>> getGroupKeys() {
         return groupKeys;
     }
 
-    public void setGroupKeys(List<Integer> groupKeys) {
+    public void setGroupKeys(List<Pair<Integer, Integer>> groupKeys) {
         this.groupKeys = groupKeys;
+    }
+    @JsonIgnore
+    public Long getId() {
+        return id;
     }
 }
