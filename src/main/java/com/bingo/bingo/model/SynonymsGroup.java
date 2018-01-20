@@ -30,6 +30,14 @@ public class SynonymsGroup {
     @Column(name = "name")
     private List<String> others = new ArrayList<String>();
 
+    public SynonymsGroup(){}
+
+    public SynonymsGroup(Project project, String name, List<String> others) {
+        this.project = project;
+        this.name = name;
+        this.others = others;
+    }
+
     public List<String> getOthers() {
         return others;
     }

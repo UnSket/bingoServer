@@ -112,75 +112,23 @@ public class ProjectController {
         }
         return ResponseEntity.badRequest().build();
     }
-
-    @PostMapping(value = "/addApprenticeSheet")
-    ResponseEntity addApprenticeSheet(@RequestParam long projectId,
-                                      @RequestParam int count){
-        List<Integer> groupKeys = new ArrayList<>();
-        List<ApprenticeSheet> sheets = new ArrayList<ApprenticeSheet>();
-        for(int i = 0; i < count; i++) {
-            for (SynonymsGroup group : projectData.getOne(projectId).getSynonymsGroups()) {
-                groupKeys.add((int) Math.round(Math.random() * (group.getOthers().size() - 1)));
-            }
-            sheets.add(new ApprenticeSheet(projectData.getOne(projectId), groupKeys));
-            groupKeys.clear();
+    @PostMapping(value = "/copyProject")
+    ResponseEntity copyProject(@RequestParam Long oldProjectId, @RequestParam String newProjectName) {
+        Project newProject = new Project(newProjectName);
+        List<SynonymsGroup> newSynonymsGroups = new ArrayList<>();
+        List<SynonymsGroup> oldSynonymsGroups = projectData.getOne(oldProjectId).getSynonymsGroups();
+        for(SynonymsGroup group : oldSynonymsGroups) {
+            newSynonymsGroups.add(new SynonymsGroup(newProject, group.getName(), new ArrayList<>(group.getOthers())));
         }
-        apprenticeSheetData.save(sheets);
-        apprenticeSheetData.flush();
-        List<Long> ids = new ArrayList<>();
-        for (ApprenticeSheet sheet : sheets) {
-            ids.add(sheet.getId());
-        }
-
+        newProject.setSynonymsGroups(newSynonymsGroups);
+        projectData.saveAndFlush(newProject);
+        synonymsGroupData.save(newSynonymsGroups);
+        synonymsGroupData.flush();
         try {
-            System.out.println(objectMapper.writeValueAsString(ids.toArray()));
-            return ResponseEntity.ok(objectMapper.writeValueAsString(ids.toArray()));
+            return ResponseEntity.ok(objectMapper.writeValueAsString(newProject));
         } catch (JsonProcessingException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @GetMapping(value = "/getApprenticeSheet")
-    ResponseEntity getApprenticeSheet(@RequestParam Long projectId, Long sheetId){
-        List<Object[]> sheets = new ArrayList<>();
-        List<String> words = new ArrayList<>();
-        List<SynonymsGroup> groups = projectData.getOne(projectId).getSynonymsGroups();
-        if (sheetId != -1) {
-            List<Pair<Integer, Integer>> keys = apprenticeSheetData.getOne(sheetId).getGroupKeys();
-            for (int i = 0; i < keys.size(); i++) {
-                //проходимся по списку групп и ключей. Соотвественно берем побочное слово с индексом из ключа
-                words.add(groups.get(keys.get(i).getKey()).getOthers().get(keys.get(i).getValue()));
-            }
-            sheets.add(words.toArray());
-        } else {
-            for(ApprenticeSheet sheet : apprenticeSheetData.getByProjectId(projectId)) {
-                List<Pair<Integer, Integer>> keys = sheet.getGroupKeys();
-                for (int i = 0; i < keys.size(); i++) {
-                    //проходимся по списку групп и ключей. Соотвественно берем побочное слово с индексом из ключа
-                    words.add(groups.get(keys.get(i).getKey()).getOthers().get(keys.get(i).getValue()));
-                }
-                sheets.add(words.toArray());
-                words.clear();
-            }
-        }
-        try {
-            return ResponseEntity.ok(objectMapper.writeValueAsString(sheets.toArray()));
-        } catch (JsonProcessingException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @GetMapping(value = "/getApprenticeSheetCount")
-    ResponseEntity getApprenticeSheetCount(@RequestParam Long projectId){
-        List<ApprenticeSheet> sheets = apprenticeSheetData.getByProjectId(projectId);
-        List<Long> ids = new ArrayList<>();
-        for (ApprenticeSheet sheet : sheets) {
-            ids.add(sheet.getId());
-        }
-        try {
-            return ResponseEntity.ok(objectMapper.writeValueAsString(ids.toArray()));
-        } catch (JsonProcessingException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
 }
