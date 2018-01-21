@@ -69,49 +69,7 @@ public class ProjectController {
         return ResponseEntity.ok(projectData.findOne(id));
     }
 
-    @PostMapping(value = "/addGroup")
-    public ResponseEntity addGroup(@RequestParam long id, @RequestBody String group){
-        Project project = projectData.getOne(id);
-        try {
-            SynonymsGroup synonymsGroup = objectMapper.readValue(group, SynonymsGroup.class);
-            synonymsGroup.setProject(project);
-            synonymsGroupData.saveAndFlush(synonymsGroup);
-            //projectData.saveAndFlush(project);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        return ResponseEntity.ok("[\"vse ok\"]");
-    }
-
-    @GetMapping(value = "/getGroups")
-    public ResponseEntity getGroups(@RequestParam long id){
-        try {
-            return ResponseEntity.ok(objectMapper.writeValueAsString(projectData.getOne(id).getSynonymsGroups()));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return ResponseEntity.badRequest().build();
-    }
-
-    @DeleteMapping(value = "/removeGroup")
-    public ResponseEntity removeGroup(@RequestParam long id) {
-        synonymsGroupData.delete(id);
-        return ResponseEntity.ok("[\"vse ok\"]");
-    }
-
-    @PutMapping(value = "/updateGroup")
-    public ResponseEntity updateGroup(@RequestBody String jsonGroup){
-        try {
-            SynonymsGroup group = objectMapper.readValue(jsonGroup, SynonymsGroup.class);
-            group.setProject(synonymsGroupData.findOne(group.getId()).getProject());
-            synonymsGroupData.saveAndFlush(group);
-            return ResponseEntity.ok(objectMapper.writeValueAsString("vse ok"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ResponseEntity.badRequest().build();
-    }
     @PostMapping(value = "/copyProject")
     ResponseEntity copyProject(@RequestParam Long oldProjectId, @RequestParam String newProjectName) {
         Project newProject = new Project(newProjectName);
@@ -129,6 +87,14 @@ public class ProjectController {
         } catch (JsonProcessingException e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @DeleteMapping(value="/delete-project")
+    ResponseEntity deleteProject(@RequestParam Long id){
+        Project project = projectData.getOne(id);
+        apprenticeSheetData.delete(apprenticeSheetData.getByProjectId(id));
+        projectData.delete(project);
+        return ResponseEntity.ok("[\"vse ok\"]");
     }
 
 }
