@@ -3,16 +3,20 @@ package com.bingo.bingo.controllers;
 import com.bingo.bingo.data.ApprenticeSheetRepository;
 import com.bingo.bingo.data.ProjectRepository;
 import com.bingo.bingo.data.SynonymsGroupRepository;
+import com.bingo.bingo.model.ApprenticeSheet;
 import com.bingo.bingo.model.Project;
 import com.bingo.bingo.model.SynonymsGroup;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "api/groups")
@@ -20,22 +24,31 @@ public class SynonymsGroupController {
 
     private ProjectRepository projectData;
     private SynonymsGroupRepository synonymsGroupData;
-
+    private ApprenticeSheetRepository apprenticeSheetData;
     private ObjectMapper objectMapper;
+
     @Autowired
-    public SynonymsGroupController(ProjectRepository projectData, SynonymsGroupRepository synonymsGroupData, ApprenticeSheetRepository apprenticeSheetRepository) {
+    public SynonymsGroupController(ProjectRepository projectData, SynonymsGroupRepository synonymsGroupData, ApprenticeSheetRepository apprenticeSheetData, ObjectMapper objectMapper) {
         this.projectData = projectData;
         this.synonymsGroupData = synonymsGroupData;
-
-        this.objectMapper = new ObjectMapper();
+        this.apprenticeSheetData = apprenticeSheetData;
+        this.objectMapper = objectMapper;
     }
+
     @PostMapping(value = "/addGroup")
     public ResponseEntity addGroup(@RequestParam long id, @RequestBody String group){
         Project project = projectData.getOne(id);
         try {
             SynonymsGroup synonymsGroup = objectMapper.readValue(group, SynonymsGroup.class);
             synonymsGroup.setProject(project);
+            apprenticeSheetData.flush();
             synonymsGroupData.saveAndFlush(synonymsGroup);
+            List<ApprenticeSheet> sheets = apprenticeSheetData.getByProjectId(id);
+            for (ApprenticeSheet sheet: sheets) {
+                sheet.getGroupKeys().add(new Pair<>(synonymsGroup.getId().intValue(), (int)(Math.random() * (synonymsGroup.getOthers().size() - 1))));
+                Collections.shuffle(sheet.getGroupKeys());
+            }
+            apprenticeSheetData.flush();
             //projectData.saveAndFlush(project);
         } catch (IOException e) {
             e.printStackTrace();
@@ -56,6 +69,19 @@ public class SynonymsGroupController {
 
     @DeleteMapping(value = "/removeGroup")
     public ResponseEntity removeGroup(@RequestParam long id) {
+        SynonymsGroup synonymsGroup = synonymsGroupData.findOne(id);
+        List<ApprenticeSheet> sheets = apprenticeSheetData.getByProjectId(synonymsGroup.getProject().getId());
+        for (ApprenticeSheet sheet: sheets) {
+            for(int i =0, length = sheet.getGroupKeys().size(); i<length; i++) {
+                Pair<Integer, Integer> pair = sheet.getGroupKeys().get(i);
+                if(pair.getKey() == synonymsGroup.getId().intValue()) {
+                    sheet.getGroupKeys().remove(pair);
+                    i--;
+                    length--;
+                }
+            }
+        }
+        apprenticeSheetData.flush();
         synonymsGroupData.delete(id);
         return ResponseEntity.ok("[\"vse ok\"]");
     }

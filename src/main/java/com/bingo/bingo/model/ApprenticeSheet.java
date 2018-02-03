@@ -20,13 +20,9 @@ public class ApprenticeSheet {
 
     public ApprenticeSheet(){}
 
-    public ApprenticeSheet(Project project, List<Integer> groupKeys) {
+    public ApprenticeSheet(Project project, List<Pair<Integer, Integer>> groupKeys) {
         this.project = project;
-        this.groupKeys = new ArrayList<>();
-        for (int i = 0; i < groupKeys.size(); i++) {
-            this.groupKeys.add(new Pair<>(i, groupKeys.get(i)));
-        }
-        Collections.shuffle(this.groupKeys);
+        this.groupKeys = groupKeys;
     }
 
     public List<Pair<Integer, Integer>> getGroupKeys() {

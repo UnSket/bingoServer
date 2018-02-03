@@ -3,25 +3,18 @@ package com.bingo.bingo.controllers;
 import com.bingo.bingo.data.ApprenticeSheetRepository;
 import com.bingo.bingo.data.ProjectRepository;
 import com.bingo.bingo.data.SynonymsGroupRepository;
-import com.bingo.bingo.model.ApprenticeSheet;
 import com.bingo.bingo.model.Project;
 import com.bingo.bingo.model.SynonymsGroup;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.regexp.internal.RE;
-import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.event.ListDataEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/api/projects")

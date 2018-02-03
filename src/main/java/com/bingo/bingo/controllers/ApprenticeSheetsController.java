@@ -11,13 +11,11 @@ import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import static java.lang.Math.toIntExact;
 
 @Controller
 @RequestMapping(value = "/api/apprentice-sheets")
@@ -36,16 +34,17 @@ public class ApprenticeSheetsController {
         this.objectMapper = new ObjectMapper();
     }
 
-    @PostMapping(value = "/addApprenticeSheet")
+    @PutMapping(value = "/addApprenticeSheet")
     ResponseEntity addApprenticeSheet(@RequestParam long projectId,
                                       @RequestParam int count){
-        List<Integer> groupKeys = new ArrayList<>();
+        List<Pair<Integer, Integer>> groupKeys = new ArrayList<>();
         List<ApprenticeSheet> sheets = new ArrayList<ApprenticeSheet>();
         for(int i = 0; i < count; i++) {
             for (SynonymsGroup group : projectData.getOne(projectId).getSynonymsGroups()) {
-                groupKeys.add((int) Math.round(Math.random() * (group.getOthers().size() - 1)));
+                groupKeys.add(new Pair<>(group.getId().intValue(), (int) Math.round(Math.random() * (group.getOthers().size() - 1))));
             }
-            sheets.add(new ApprenticeSheet(projectData.getOne(projectId), groupKeys));
+            Collections.shuffle(groupKeys);
+            sheets.add(new ApprenticeSheet(projectData.getOne(projectId), new ArrayList<>(groupKeys)));
             groupKeys.clear();
         }
         apprenticeSheetData.save(sheets);
@@ -65,29 +64,32 @@ public class ApprenticeSheetsController {
 
     @GetMapping(value = "/getApprenticeSheet")
     ResponseEntity getApprenticeSheet(@RequestParam Long projectId, Long sheetId){
-        List<Object[]> sheets = new ArrayList<>();
-        List<String> words = new ArrayList<>();
-        List<SynonymsGroup> groups = projectData.getOne(projectId).getSynonymsGroups();
+        List<List<Pair<Integer, String>>> sheetsResult = new ArrayList<>();
+        List<Pair<Integer, String>> words = new ArrayList<>();
+        List<ApprenticeSheet> sheets = new ArrayList<>();
         if (sheetId != -1) {
-            List<Pair<Integer, Integer>> keys = apprenticeSheetData.getOne(sheetId).getGroupKeys();
+            sheets.add(apprenticeSheetData.getOne(sheetId));
+        } else {
+            sheets.addAll(apprenticeSheetData.getByProjectId(projectId));
+        }
+        for (ApprenticeSheet sheet : sheets) {
+            List<Pair<Integer, Integer>> keys = sheet.getGroupKeys();
             for (int i = 0; i < keys.size(); i++) {
                 //проходимся по списку групп и ключей. Соотвественно берем побочное слово с индексом из ключа
-                words.add(groups.get(keys.get(i).getKey()).getOthers().get(keys.get(i).getValue()));
-            }
-            sheets.add(words.toArray());
-        } else {
-            for(ApprenticeSheet sheet : apprenticeSheetData.getByProjectId(projectId)) {
-                List<Pair<Integer, Integer>> keys = sheet.getGroupKeys();
-                for (int i = 0; i < keys.size(); i++) {
-                    //проходимся по списку групп и ключей. Соотвественно берем побочное слово с индексом из ключа
-                    words.add(groups.get(keys.get(i).getKey()).getOthers().get(keys.get(i).getValue()));
+                SynonymsGroup group = synonymsGroupData.findOne((long)keys.get(i).getKey());
+                //проходимся по списку групп и ключей. Соотвественно берем побочное слово с индексом из ключа
+                if (keys.get(i).getValue() < group.getOthers().size()) {
+                    words.add(new Pair<>(keys.get(i).getKey(), group.getOthers().get(keys.get(i).getValue())));
+                } else {
+                    keys.set(i, new Pair<>(keys.get(i).getKey(), (int)(Math.random() * (group.getOthers().size() - 1))));
+                    words.add(new Pair<>(keys.get(i).getKey(), group.getOthers().get(keys.get(i).getValue())));
                 }
-                sheets.add(words.toArray());
-                words.clear();
             }
+            sheetsResult.add(new ArrayList<>(words));
+            words.clear();
         }
         try {
-            return ResponseEntity.ok(objectMapper.writeValueAsString(sheets.toArray()));
+            return ResponseEntity.ok(objectMapper.writeValueAsString(sheetsResult));
         } catch (JsonProcessingException e) {
             return ResponseEntity.badRequest().build();
         }
@@ -97,13 +99,37 @@ public class ApprenticeSheetsController {
     ResponseEntity getApprenticeSheetCount(@RequestParam Long projectId){
         List<ApprenticeSheet> sheets = apprenticeSheetData.getByProjectId(projectId);
         List<Long> ids = new ArrayList<>();
-        for (ApprenticeSheet sheet : sheets) {
-            ids.add(sheet.getId());
-        }
+        sheets.forEach((element) ->  ids.add(element.getId()));
         try {
             return ResponseEntity.ok(objectMapper.writeValueAsString(ids.toArray()));
         } catch (JsonProcessingException e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @PostMapping(value = "/changeWord")
+    ResponseEntity changeWord(@RequestParam Long sheetId,
+                              @RequestParam Long wordId) {
+        List<String> variants = synonymsGroupData.getOne(wordId).getOthers();
+        int random = toIntExact(Math.round(Math.random() * (variants.size() - 1)));
+        List<Pair<Integer, Integer>> keys = apprenticeSheetData.getOne(sheetId).getGroupKeys();
+        for (Pair<Integer, Integer> el : keys){
+            if(el.getKey() == toIntExact(wordId)) {
+                while (random == el.getValue()) {
+                    random = toIntExact(Math.round(Math.random() * (variants.size() - 1) ));
+                }
+                keys.set(keys.indexOf(el), new Pair<>(el.getKey(), random));
+                apprenticeSheetData.getOne(sheetId).setGroupKeys(keys);
+                apprenticeSheetData.flush();
+                return ResponseEntity.ok("\"" + variants.get(random) + "\"");
+            }
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @DeleteMapping(value = "/delete/{sheetId}")
+    ResponseEntity deleteSheet(@PathVariable Long sheetId) {
+        apprenticeSheetData.delete(sheetId);
+        return ResponseEntity.ok().build();
     }
 }
