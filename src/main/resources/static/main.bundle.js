@@ -1113,7 +1113,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/projects/projects.component.html":
 /***/ (function(module, exports) {
 
-module.exports = " <div class=\"block\">\r\n  <div class=\"col-12 text-center\">\r\n    <h3>Choose or create project</h3>\r\n  </div>\r\n  <div class=\"col-12 text-center mt-3\">\r\n    <div ngbDropdown>\r\n      <button class=\"btn btn-primary dropdown\" id=\"dropdownBasic2\" ngbDropdownToggle>{{choosedProject.name}}</button>\r\n      <div ngbDropdownMenu aria-labelledby=\"dropdownBasic1\">\r\n        <button (click)=\"choose(project)\" *ngFor=\"let project of projects\" class=\"dropdown-item\">{{project.id}} - {{project.name}}</button>\r\n        <button (click)=\"choose({ name: 'New project', id: -1})\" class=\"dropdown-item\">New project</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div *ngIf=\"choosedProject.id === -1\" class=\"col-12 text-center mt-3\">\r\n    <input type=\"text\" class=\"md-3 newProject\" [(ngModel)]=\"newProject\" placeholder=\"Input new project name\" (keyup)=\"validate('new', $event.target.value)\"/>\r\n    <ngb-alert *ngFor=\"let alert of alerts\" [dismissible]=\"false\" type=\"danger\">{{ alert }}</ngb-alert>\r\n  </div>\r\n  <div class=\"col-12 text-center mt-3\">\r\n    <input class=\"btn btn-success\" type=\"button\" (click)=\"save()\" value=\"Commit\" [disabled]=\"isDisabled\">\r\n  </div>\r\n</div>\r\n<div *ngIf=\"this.project\" class=\"block border-top\">\r\n <div class=\"col-12 text-center\">\r\n   <h3 class=\"mb-3\">Copy project</h3>\r\n   <input (keyup)=\"validate('copy', $event.target.value)\" [(ngModel)]=\"copyName\" type=\"text\" placeholder=\"Input new project name\">\r\n   <ngb-alert *ngFor=\"let alert of copyAlerts\" [dismissible]=\"false\" type=\"danger\">{{ alert }}</ngb-alert>\r\n </div>\r\n <div class=\"col-12 text-center mt-3\">\r\n   <button class=\"btn btn-primary\" [disabled]=\"isCopyDisabled\" (click)=\"copy()\">Copy</button>\r\n </div>\r\n</div>\r\n <div *ngIf=\"this.project\" class=\"block border-top\">\r\n   <div class=\"col-12 text-center mt-3\">\r\n     <button class=\"btn btn-danger\" (click)=\"open(editModal)\">Delete project</button>\r\n   </div>\r\n </div>\r\n <ng-template #editModal let-c=\"close\" let-d=\"dismiss\">\r\n   <div class=\"modal-header\">\r\n     <h4 class=\"modal-title\">Are you sure you want to delete the project \"{{project.name}}\"?</h4>\r\n     <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"d('Cross click')\">\r\n       <span aria-hidden=\"true\">&times;</span>\r\n     </button>\r\n   </div>\r\n   <div class=\"modal-body\">\r\n     <button class=\"btn btn-outline-danger mr-2\" (click)=\"deleteProject()\">Delete</button>\r\n     <button type=\"button\" class=\"btn btn-outline-dark\" (click)=\"c('Close click')\">Close</button>\r\n   </div>\r\n </ng-template>\r\n"
+module.exports = " <div class=\"block\">\r\n  <div class=\"col-12 text-center\">\r\n    <h3>Choose or create project</h3>\r\n  </div>\r\n  <div class=\"col-12 text-center mt-3\">\r\n    <div ngbDropdown>\r\n      <button class=\"btn btn-primary dropdown\" id=\"dropdownBasic2\" ngbDropdownToggle>{{choosedProject.name}}</button>\r\n      <div ngbDropdownMenu aria-labelledby=\"dropdownBasic1\">\r\n        <button (click)=\"choose(project)\" *ngFor=\"let project of projects\" class=\"dropdown-item\">{{project.name}}</button>\r\n        <button (click)=\"choose({ name: 'New project', id: -1})\" class=\"dropdown-item\">New project</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div *ngIf=\"choosedProject.id === -1\" class=\"col-12 text-center mt-3\">\r\n    <input type=\"text\" class=\"md-3 newProject\" [(ngModel)]=\"newProject\" placeholder=\"Input new project name\" (keyup)=\"validate('new', $event.target.value)\"/>\r\n    <ngb-alert *ngFor=\"let alert of alerts\" [dismissible]=\"false\" type=\"danger\">{{ alert }}</ngb-alert>\r\n  </div>\r\n  <div class=\"col-12 text-center mt-3\">\r\n    <input class=\"btn btn-success\" type=\"button\" (click)=\"save()\" value=\"Commit\" [disabled]=\"isDisabled\">\r\n  </div>\r\n</div>\r\n<div *ngIf=\"this.project\" class=\"block border-top\">\r\n <div class=\"col-12 text-center\">\r\n   <h3 class=\"mb-3\">Copy project</h3>\r\n   <input (keyup)=\"validate('copy', $event.target.value)\" [(ngModel)]=\"copyName\" type=\"text\" placeholder=\"Input new project name\">\r\n   <ngb-alert *ngFor=\"let alert of copyAlerts\" [dismissible]=\"false\" type=\"danger\">{{ alert }}</ngb-alert>\r\n </div>\r\n <div class=\"col-12 text-center mt-3\">\r\n   <button class=\"btn btn-primary\" [disabled]=\"isCopyDisabled\" (click)=\"copy()\">Copy</button>\r\n </div>\r\n</div>\r\n <div *ngIf=\"this.project\" class=\"block border-top\">\r\n   <div class=\"col-12 text-center mt-3\">\r\n     <button class=\"btn btn-danger\" (click)=\"open(editModal)\">Delete project</button>\r\n   </div>\r\n </div>\r\n <ng-template #editModal let-c=\"close\" let-d=\"dismiss\">\r\n   <div class=\"modal-header\">\r\n     <h4 class=\"modal-title\">Are you sure you want to delete the project \"{{project.name}}\"?</h4>\r\n     <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"d('Cross click')\">\r\n       <span aria-hidden=\"true\">&times;</span>\r\n     </button>\r\n   </div>\r\n   <div class=\"modal-body\">\r\n     <button class=\"btn btn-outline-danger mr-2\" (click)=\"deleteProject()\">Delete</button>\r\n     <button type=\"button\" class=\"btn btn-outline-dark\" (click)=\"c('Close click')\">Close</button>\r\n   </div>\r\n </ng-template>\r\n"
 
 /***/ }),
 
@@ -1537,7 +1537,6 @@ var WelcomeScreenComponent = (function () {
     function WelcomeScreenComponent(route, router) {
         this.route = route;
         this.router = router;
-        this.state = 'inactive';
     }
     Object.defineProperty(WelcomeScreenComponent.prototype, "routeAnimation", {
         get: function () {
@@ -1546,27 +1545,7 @@ var WelcomeScreenComponent = (function () {
         enumerable: true,
         configurable: true
     });
-    WelcomeScreenComponent.prototype.checkLocalStorage = function () {
-        if (localStorage.getItem('currentProject')) {
-            this.router.navigate(['project/', localStorage.getItem('currentProject')]);
-        }
-        else {
-            this.router.navigate(['/']);
-        }
-    };
-    WelcomeScreenComponent.prototype.ngAfterViewInit = function () {
-        this.state = 'active';
-    };
     WelcomeScreenComponent.prototype.ngOnInit = function () {
-        this.checkLocalStorage();
-    };
-    WelcomeScreenComponent.prototype.startAnimation = function (path) {
-        console.log('connect' + path);
-        this.path = path;
-        this.redirect();
-    };
-    WelcomeScreenComponent.prototype.redirect = function () {
-        this.router.navigate(this.path);
     };
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["y" /* HostBinding */])('@routeAnimation'),
