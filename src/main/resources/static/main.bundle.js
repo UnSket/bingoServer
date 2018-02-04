@@ -679,7 +679,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, ":host{\r\n  display: block;\r\n}\r\napp-projects >>> .block {\r\n  background-color: transparent;\r\n  box-shadow: none;\r\n}\r\n>>>.border-top{\r\n  border-top: 1px solid black;\r\n  padding-top: 15px;\r\n  border-radius: 0 !important;\r\n}\r\nh1{\r\n  text-align: center;\r\n  color: white;\r\n  text-transform: uppercase;\r\n}\r\ninput[type=number]{\r\n  width: 260px;\r\n  padding: 5px 15px;\r\n  border-radius: 20px;\r\n  background-color: transparent;\r\n  border: 1px solid white;\r\n  outline: none;\r\n  color: white;\r\n  max-width: 100%;\r\n  box-shadow: none;\r\n}\r\ninput[type=number]:focus{\r\n  box-shadow: 0 0 15px 5px white;\r\n}\r\ninput[type=number]::-webkit-input-placeholder {color: rgb(182, 182, 182);}\r\ninput[type=number]::-moz-placeholder          {color:rgb(182, 182, 182);}/* Firefox 19+ */\r\ninput[type=number]:-moz-placeholder           {color:rgb(182, 182, 182);}/* Firefox 18- */\r\ninput[type=number]:-ms-input-placeholder      {color:rgb(182, 182, 182);}\r\n\r\ninput[type=text]{\r\n  width: 205px;\r\n  padding: 5px 15px;\r\n  border-radius: 20px;\r\n  background-color: transparent;\r\n  border: 1px solid white;\r\n  outline: none;\r\n  color: white;\r\n}\r\ninput[type=text]:focus{\r\n  box-shadow: 0 0 15px 5px white;\r\n}\r\ninput[type=text]::-webkit-input-placeholder {color:white;}\r\ninput[type=text]::-moz-placeholder          {color:white;}/* Firefox 19+ */\r\ninput[type=text]:-moz-placeholder           {color:white;}/* Firefox 18- */\r\ninput[type=text]:-ms-input-placeholder      {color:white;}\r\n\r\napp-projects{\r\n  margin: -40px 0 !important;\r\n  display: block;\r\n  max-width: 100% !important;\r\n  width: 100% !important;\r\n}\r\n", ""]);
+exports.push([module.i, ":host{\r\n  display: block;\r\n  overflow: auto;\r\n  height: 100%;\r\n}\r\napp-projects >>> .block {\r\n  background-color: transparent;\r\n  box-shadow: none;\r\n}\r\n>>>.border-top{\r\n  border-top: 1px solid black;\r\n  padding-top: 15px;\r\n  border-radius: 0 !important;\r\n}\r\nh1{\r\n  text-align: center;\r\n  color: white;\r\n  text-transform: uppercase;\r\n}\r\ninput[type=number]{\r\n  width: 260px;\r\n  padding: 5px 15px;\r\n  border-radius: 20px;\r\n  background-color: transparent;\r\n  border: 1px solid white;\r\n  outline: none;\r\n  color: white;\r\n  max-width: 100%;\r\n  box-shadow: none;\r\n}\r\ninput[type=number]:focus{\r\n  box-shadow: 0 0 15px 5px white;\r\n}\r\ninput[type=number]::-webkit-input-placeholder {color: rgb(182, 182, 182);}\r\ninput[type=number]::-moz-placeholder          {color:rgb(182, 182, 182);}/* Firefox 19+ */\r\ninput[type=number]:-moz-placeholder           {color:rgb(182, 182, 182);}/* Firefox 18- */\r\ninput[type=number]:-ms-input-placeholder      {color:rgb(182, 182, 182);}\r\n\r\ninput[type=text]{\r\n  width: 205px;\r\n  padding: 5px 15px;\r\n  border-radius: 20px;\r\n  background-color: transparent;\r\n  border: 1px solid white;\r\n  outline: none;\r\n  color: white;\r\n}\r\ninput[type=text]:focus{\r\n  box-shadow: 0 0 15px 5px white;\r\n}\r\ninput[type=text]::-webkit-input-placeholder {color:white;}\r\ninput[type=text]::-moz-placeholder          {color:white;}/* Firefox 19+ */\r\ninput[type=text]:-moz-placeholder           {color:white;}/* Firefox 18- */\r\ninput[type=text]:-ms-input-placeholder      {color:white;}\r\n\r\napp-projects{\r\n  margin: -40px 0 !important;\r\n  display: block;\r\n  max-width: 100% !important;\r\n  width: 100% !important;\r\n}\r\n", ""]);
 
 // exports
 
@@ -738,7 +738,6 @@ var MainMenuHomeComponent = (function () {
     });
     MainMenuHomeComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.checkLocalStorage();
         this.route.paramMap.subscribe(function (next) {
             var id = +next.get('id');
             _this.getProject(id);
@@ -757,14 +756,6 @@ var MainMenuHomeComponent = (function () {
         this.apprenticeSheetService.getApprenticeSheetCount(id).subscribe(function (ids) {
             _this.apprenticeSheetLook = ids;
         });
-    };
-    MainMenuHomeComponent.prototype.checkLocalStorage = function () {
-        if (localStorage.getItem('currentProject')) {
-            this.router.navigate(['project/', localStorage.getItem('currentProject')]);
-        }
-        else {
-            this.router.navigate(['/']);
-        }
     };
     MainMenuHomeComponent.prototype.validate = function () {
         this.apprenticeSheetAddCount = this.apprenticeSheetAddCount > 50 - this.apprenticeSheetLook.length ?
@@ -1195,13 +1186,11 @@ var ProjectsComponent = (function () {
         var _this = this;
         if (this.choosedProject.id === -1) {
             this.projectService.addProject(this.newProject).subscribe(function (data) {
-                localStorage.setItem('currentProject', data);
                 _this.router.navigate(["/project/", data]);
             });
         }
         else {
             console.log('choosed - ' + this.choosedProject.name);
-            localStorage.setItem('currentProject', this.choosedProject.id.toString());
             this.router.navigate(["/project/", this.choosedProject.id.toString()]);
         }
         if (this.changeTab) {
@@ -1211,7 +1200,6 @@ var ProjectsComponent = (function () {
     ProjectsComponent.prototype.copy = function () {
         var _this = this;
         this.projectService.copyProject(this.project.id, this.copyName).subscribe(function (project) {
-            localStorage.setItem('currentProject', project.id + '');
             _this.router.navigate(["/project/" + project.id]);
             if (_this.changeTab) {
                 _this.changeTab.emit();
@@ -1236,7 +1224,6 @@ var ProjectsComponent = (function () {
     ProjectsComponent.prototype.deleteProject = function () {
         var _this = this;
         this.projectService.deleteProject(this.project.id).subscribe(function (_) {
-            localStorage.removeItem('currentProject');
             _this.modal.close();
             _this.router.navigate(['/']);
         });
@@ -1278,8 +1265,6 @@ var ProjectsComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common_http__ = __webpack_require__("../../../common/esm5/http.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_operators__ = __webpack_require__("../../../../rxjs/_esm5/operators/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_observable_of__ = __webpack_require__("../../../../rxjs/_esm5/observable/of.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_observable__ = __webpack_require__("../../../../rxjs/observable.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_observable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_observable__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1289,7 +1274,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-
 
 
 
@@ -1311,21 +1295,10 @@ var ApprenticeSheetService = (function () {
     };
     ApprenticeSheetService.prototype.getApprenticeSheet = function (projectId, sheetId) {
         var _this = this;
-        var answer = this.data.filter(function (next) { return next.projectId === projectId; }); //.filter(next => next.sheets.filter())
-        if (answer.length > 0) {
-            return __WEBPACK_IMPORTED_MODULE_4_rxjs_observable__["Observable"].create(function (observer) { return observer.next(answer[0].sheets); });
-        }
-        else {
-            this.spinner = true;
-            return this.http.get(this.projectUrl + ("/getApprenticeSheet?projectId=" + projectId + "&sheetId=" + sheetId)).pipe(Object(__WEBPACK_IMPORTED_MODULE_2_rxjs_operators__["c" /* tap */])(function (next) {
-                var sheets = [];
-                next.forEach(function (sheet) {
-                    sheets.push(sheet.slice(0));
-                });
-                _this.data.push({ projectId: projectId, isAllSheets: false, sheets: sheets.slice(0) });
-                _this.log("fetched " + sheetId + " apprenticeSheet from " + projectId + " project");
-            }), Object(__WEBPACK_IMPORTED_MODULE_2_rxjs_operators__["a" /* catchError */])(this.handleError("get apprenticeSheet")));
-        }
+        this.spinner = true;
+        return this.http.get(this.projectUrl + ("/getApprenticeSheet?projectId=" + projectId + "&sheetId=" + sheetId)).pipe(Object(__WEBPACK_IMPORTED_MODULE_2_rxjs_operators__["c" /* tap */])(function (next) {
+            _this.log("fetched " + sheetId + " apprenticeSheet from " + projectId + " project");
+        }), Object(__WEBPACK_IMPORTED_MODULE_2_rxjs_operators__["a" /* catchError */])(this.handleError("get apprenticeSheet")));
     };
     ApprenticeSheetService.prototype.getApprenticeSheetCount = function (projectId) {
         var _this = this;
