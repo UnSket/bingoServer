@@ -355,7 +355,7 @@ var AddGroupComponent = (function () {
     };
     AddGroupComponent.prototype.save = function () {
         var _this = this;
-        if (this.group.id === 0) {
+        if (this.group.id === -1) {
             this.groupService.addGroup(this.project.id, this.group).subscribe(function (data) {
                 console.log(data);
                 _this.currentCount++;
