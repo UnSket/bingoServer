@@ -1509,7 +1509,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/welcome-screen/welcome-screen.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "\r\n    <header>\r\n      <h1>Bingo creater - v 0.1</h1>\r\n    </header>\r\n    <div class=\"myContainer\">\r\n      <app-projects\r\n      (redirect)=\"startAnimation($event)\"></app-projects>\r\n    </div>\r\n\r\n"
+module.exports = "\r\n    <header>\r\n      <h1>Bingo creater - v 1.0 RELEASE!</h1>\r\n    </header>\r\n    <div class=\"myContainer\">\r\n      <app-projects\r\n      (redirect)=\"startAnimation($event)\"></app-projects>\r\n    </div>\r\n\r\n"
 
 /***/ }),
 
