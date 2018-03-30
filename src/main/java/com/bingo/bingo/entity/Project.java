@@ -1,8 +1,4 @@
-package com.bingo.bingo.model;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
-import org.hibernate.annotations.Cascade;
+package com.bingo.bingo.entity;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,6 +12,10 @@ public class Project {
 
     @OneToMany(mappedBy = "project", orphanRemoval = true)
     private List<SynonymsGroup> synonymsGroups;
+
+    @ManyToOne
+    @JoinColumn(name = "users")
+    private User user;
 
     public Project(String name) {
         this.name = name;

@@ -1,10 +1,10 @@
 package com.bingo.bingo.controllers;
 
-import com.bingo.bingo.data.ApprenticeSheetRepository;
-import com.bingo.bingo.data.ProjectRepository;
-import com.bingo.bingo.data.SynonymsGroupRepository;
-import com.bingo.bingo.model.Project;
-import com.bingo.bingo.model.SynonymsGroup;
+import com.bingo.bingo.repository.ApprenticeSheetRepository;
+import com.bingo.bingo.repository.ProjectRepository;
+import com.bingo.bingo.repository.SynonymsGroupRepository;
+import com.bingo.bingo.entity.Project;
+import com.bingo.bingo.entity.SynonymsGroup;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;

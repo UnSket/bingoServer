@@ -1,15 +1,11 @@
-package com.bingo.bingo.model;
+package com.bingo.bingo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.annotations.*;
-import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.lang.reflect.Array;
 import java.util.*;
 
 @Entity @Table(name = "synonymsMain")

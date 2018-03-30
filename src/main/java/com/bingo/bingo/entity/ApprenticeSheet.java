@@ -1,4 +1,4 @@
-package com.bingo.bingo.model;
+package com.bingo.bingo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javafx.util.Pair;
